@@ -120,16 +120,16 @@ class RainSynthesizer {
 const SONGS = [
   { title: "Special Night Mix", artist: "Late Night Beats", duration: "4:30", total: 270, ytId: "5RN7-wdKAKg" },
   { title: "Kun Faya Kun", artist: "A.R. Rahman", duration: "7:52", total: 472, ytId: "T94PHkuydcw" },
-  { title: "O Re Piya", artist: "Rahat Fateh Ali Khan", duration: "5:12", total: 312, ytId: "y2s4A0m5d8w" },
-  { title: "Iktara", artist: "Kavita Seth", duration: "4:21", total: 261, ytId: "A2WJ2wRz2Hw" },
+  { title: "O Re Piya", artist: "Rahat Fateh Ali Khan", duration: "5:12", total: 312, ytId: "K_6Ld1V6Hts" },
+  { title: "Iktara", artist: "Kavita Seth", duration: "4:21", total: 261, ytId: "F1S-Kj5e08o" },
   { title: "Agar Tum Saath Ho", artist: "Alka Yagnik & Arijit Singh", duration: "5:42", total: 342, ytId: "sK7riqg2mr4" },
-  { title: "Phir Le Aya Dil", artist: "Arijit Singh", duration: "5:08", total: 308, ytId: "A85u1W02x2k" },
+  { title: "Phir Le Aya Dil", artist: "Arijit Singh", duration: "5:08", total: 308, ytId: "Kz6pBv8qK4E" },
   { title: "Tum Se Hi", artist: "Mohit Chauhan", duration: "5:21", total: 321, ytId: "Cb6wuzOurPc" },
-  { title: "Kabira", artist: "Tochi Raina & Rekha Bhardwaj", duration: "3:43", total: 223, ytId: "jHL9xpI9L68" },
-  { title: "Aaoge Jab Tum", artist: "Rashid Khan", duration: "5:55", total: 355, ytId: "nO39n957sUo" },
+  { title: "Kabira", artist: "Tochi Raina & Rekha Bhardwaj", duration: "3:43", total: 223, ytId: "F32uG1JqBqE" },
+  { title: "Aaoge Jab Tum", artist: "Rashid Khan", duration: "5:55", total: 355, ytId: "R9q3Vq27m1M" },
   { title: "Choo Lo", artist: "The Local Train", duration: "3:53", total: 233, ytId: "sFMRqxCexDk" },
-  { title: "Tune Kaha", artist: "Prateek Kuhad", duration: "3:24", total: 204, ytId: "T1t27a0s7fQ" },
-  { title: "Waqt Ki Baatein", artist: "Dream Note", duration: "4:07", total: 247, ytId: "pEEk70w5sL0" },
+  { title: "Tune Kaha", artist: "Prateek Kuhad", duration: "3:24", total: 204, ytId: "A8vG423L4E8" },
+  { title: "Waqt Ki Baatein", artist: "Dream Note", duration: "4:07", total: 247, ytId: "YF06JzQyL70" },
 ]
 
 const WHITEBOARD_SECTIONS = [
