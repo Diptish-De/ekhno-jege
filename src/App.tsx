@@ -583,28 +583,28 @@ export default function App() {
         {/* Sky Ambient Overlay */}
         <div className="sky-ambient" style={{ background: activeAmbient.sky }} />
 
-        {/* Rain overlay when on */}
+        {/* Window Raindrops — strictly outside on the window glass pane (top-left), not inside the room */}
         {rainOn && (
-          <>
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                backgroundImage: "repeating-linear-gradient(transparent 0px, transparent 6px, rgba(180,200,220,0.03) 6px, rgba(180,200,220,0.03) 7px)",
-                backgroundSize: "4px 7px",
-                opacity: 0.5,
-              }}
-            />
-            {/* Run raindrops streaks */}
+          <div 
+            className="absolute pointer-events-none overflow-hidden" 
+            style={{ 
+              left: "0%", 
+              top: "0%", 
+              width: "36%", 
+              height: "55%", 
+              zIndex: 12,
+              maskImage: "linear-gradient(180deg, rgba(0,0,0,1) 70%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(180deg, rgba(0,0,0,1) 70%, transparent 100%)"
+            }}
+          >
             <div className="window-glass">
-              <div className="raindrop-streak" style={{ left: "8%", animationDelay: "0s", animationDuration: "2.1s" }} />
-              <div className="raindrop-streak" style={{ left: "15%", animationDelay: "0.5s", animationDuration: "2.8s" }} />
-              <div className="raindrop-streak" style={{ left: "28%", animationDelay: "1.1s", animationDuration: "2.3s" }} />
-              <div className="raindrop-streak" style={{ left: "42%", animationDelay: "0.2s", animationDuration: "2.6s" }} />
-              <div className="raindrop-streak" style={{ left: "55%", animationDelay: "1.6s", animationDuration: "2.9s" }} />
-              <div className="raindrop-streak" style={{ left: "70%", animationDelay: "0.7s", animationDuration: "2.4s" }} />
-              <div className="raindrop-streak" style={{ left: "85%", animationDelay: "1.3s", animationDuration: "2.7s" }} />
+              <div className="raindrop-streak" style={{ left: "15%", animationDelay: "0s", animationDuration: "2.1s" }} />
+              <div className="raindrop-streak" style={{ left: "32%", animationDelay: "0.5s", animationDuration: "2.8s" }} />
+              <div className="raindrop-streak" style={{ left: "55%", animationDelay: "1.1s", animationDuration: "2.3s" }} />
+              <div className="raindrop-streak" style={{ left: "75%", animationDelay: "0.2s", animationDuration: "2.6s" }} />
+              <div className="raindrop-streak" style={{ left: "90%", animationDelay: "1.6s", animationDuration: "2.9s" }} />
             </div>
-          </>
+          </div>
         )}
       </div>
 
