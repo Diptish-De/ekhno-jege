@@ -1,0 +1,10 @@
+{
+  "description": "Automates task execution with a simple command interface, helping users streamline workflows and boost productivity effortlessly.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
