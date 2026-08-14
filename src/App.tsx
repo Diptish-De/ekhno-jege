@@ -234,6 +234,9 @@ export default function App() {
   const containerRef = useRef<HTMLDivElement>(null)
   const rainSynthRef = useRef<RainSynthesizer | null>(null)
   const ytPlayerRef = useRef<any>(null)
+  const ytContainerRef = useRef<HTMLDivElement>(null)
+  const currentSongRef = useRef(currentSong)
+  currentSongRef.current = currentSong
 
   const song = SONGS[currentSong]
 
@@ -254,22 +257,21 @@ export default function App() {
 
   // Dynamic initialization of YouTube Player IFrame API
   useEffect(() => {
-    if (!(window as any).YT) {
-      const tag = document.createElement("script")
-      tag.src = "https://www.youtube.com/iframe_api"
-      const firstScriptTag = document.getElementsByTagName("script")[0]
-      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
-    }
+    const container = ytContainerRef.current
+    if (!container) return
 
-    (window as any).onYouTubeIframeAPIReady = () => {
-      initPlayer()
-    }
+    // Create a raw DOM element for YT.Player to replace — keeps it outside React's VDOM
+    const playerEl = document.createElement("div")
+    playerEl.id = "yt-player-target"
+    container.innerHTML = ""
+    container.appendChild(playerEl)
 
     const initPlayer = () => {
-      ytPlayerRef.current = new (window as any).YT.Player("yt-player", {
+      if (ytPlayerRef.current) return // already initialised
+      ytPlayerRef.current = new (window as any).YT.Player("yt-player-target", {
         height: "200",
         width: "200",
-        videoId: song.ytId,
+        videoId: SONGS[currentSongRef.current].ytId,
         playerVars: {
           playsinline: 1,
           controls: 0,
@@ -278,40 +280,56 @@ export default function App() {
           rel: 0,
           showinfo: 0,
           modestbranding: 1,
+          origin: window.location.origin,
+          enablejsapi: 1,
         },
         events: {
           onReady: () => {
             setYtReady(true)
           },
           onStateChange: (event: any) => {
-            // 1 = playing, 2 = paused, 0 = ended
-            if (event.data === (window as any).YT.PlayerState.PLAYING) {
+            const YT = (window as any).YT
+            if (event.data === YT.PlayerState.PLAYING) {
               setPlaying(true)
-            } else if (event.data === (window as any).YT.PlayerState.PAUSED) {
+            } else if (event.data === YT.PlayerState.PAUSED) {
               setPlaying(false)
-            } else if (event.data === (window as any).YT.PlayerState.ENDED) {
-              if (looping) {
-                ytPlayerRef.current.playVideo()
-              } else {
-                next()
-              }
+            } else if (event.data === YT.PlayerState.ENDED) {
+              // auto-advance to next song
+              setCurrentSong(s => (s + 1) % SONGS.length)
             }
           },
         },
       })
     }
 
-    if ((window as any).YT && (window as any).YT.Player && !ytPlayerRef.current) {
+    if ((window as any).YT && (window as any).YT.Player) {
       initPlayer()
+    } else {
+      // Load the IFrame API script if not already present
+      if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+        const tag = document.createElement("script")
+        tag.src = "https://www.youtube.com/iframe_api"
+        document.head.appendChild(tag)
+      }
+      (window as any).onYouTubeIframeAPIReady = initPlayer
+    }
+
+    return () => {
+      if (ytPlayerRef.current && typeof ytPlayerRef.current.destroy === "function") {
+        ytPlayerRef.current.destroy()
+        ytPlayerRef.current = null
+        setYtReady(false)
+      }
     }
   }, [])
 
   // Sync track loading from YT ID
   useEffect(() => {
     if (ytPlayerRef.current && ytReady) {
-      ytPlayerRef.current.cueVideoById(song.ytId)
-      if (playing) {
-        ytPlayerRef.current.playVideo()
+      try {
+        ytPlayerRef.current.loadVideoById(song.ytId)
+      } catch (e) {
+        console.warn("YT loadVideoById failed:", e)
       }
     }
     setProgress(0)
@@ -452,10 +470,10 @@ export default function App() {
       onMouseMove={handleMouseMove}
       onClick={resumeAudio}
     >
-      {/* Background YouTube Iframe Container (masked behind illustration layer to satisfy autoplay/rendering visibility rules) */}
+      {/* YouTube player wrapper — ref-based so React never reconciles the inner iframe */}
       <div 
-        id="yt-player" 
-        className="absolute pointer-events-none" 
+        ref={ytContainerRef}
+        className="absolute pointer-events-none overflow-hidden" 
         style={{ width: "200px", height: "200px", left: "20px", top: "20px", zIndex: 0, opacity: 0.001 }} 
       />
 
