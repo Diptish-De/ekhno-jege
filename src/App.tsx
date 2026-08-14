@@ -147,7 +147,13 @@ const BOOKS = [
   { title: "The Psychology of Money", playlist: "About the Creator" },
 ]
 
-const LISTENING_MODES = ["Work", "Study", "Rain", "Nostalgia", "Midnight"]
+const PLAYLISTS: Record<string, string> = {
+  "90s Bollywood": "PLAFjPVdERAkt7jNU1XW7EWXHLyYyf7Sux",
+  "90s": "PLAFjPVdERAkt7jNU1XW7EWXHLyYyf7Sux",
+  "Ghazals": "PLlgtUI5-ajb5Z1cJY0YNNr9oukdSQ4SCU",
+}
+
+const LISTENING_MODES = ["Work", "Study", "Rain", "Nostalgia", "Midnight", "90s Bollywood", "Ghazals"]
 
 const TEA_MENU = ["90s Bollywood", "Ghazals", "Late Night Songs", "Rainy Evening Mix", "Old Bengali Classics"]
 
@@ -230,6 +236,8 @@ export default function App() {
   const [ambientHour, setAmbientHour] = useState<number | null>(null)
   const [lightningActive, setLightningActive] = useState(false)
   const [ytReady, setYtReady] = useState(false)
+  const [dynamicTrack, setDynamicTrack] = useState<{ title: string; artist: string } | null>(null)
+  const [dynamicTotal, setDynamicTotal] = useState<number | null>(null)
 
   const containerRef = useRef<HTMLDivElement>(null)
   const rainSynthRef = useRef<RainSynthesizer | null>(null)
@@ -350,13 +358,26 @@ export default function App() {
     setPlaying(!playing)
   }
 
-  // Poll YouTube video progress timeline
+  // Poll YouTube video progress timeline and dynamic metadata
   useEffect(() => {
     let progressInterval: number | null = null
     if (playing && ytPlayerRef.current && ytReady) {
       progressInterval = window.setInterval(() => {
-        const currentTime = Math.floor(ytPlayerRef.current.getCurrentTime() || 0)
-        setProgress(currentTime)
+        try {
+          const currentTime = Math.floor(ytPlayerRef.current.getCurrentTime() || 0)
+          setProgress(currentTime)
+          const duration = Math.floor(ytPlayerRef.current.getDuration() || 0)
+          if (duration > 0 && dynamicTotal !== duration) {
+            setDynamicTotal(duration)
+          }
+          const videoData = ytPlayerRef.current.getVideoData?.()
+          if (videoData && videoData.title) {
+            setDynamicTrack({
+              title: videoData.title,
+              artist: videoData.author || listeningMode || "YouTube"
+            })
+          }
+        } catch (e) {}
       }, 500)
     } else {
       if (progressInterval) clearInterval(progressInterval)
@@ -364,7 +385,30 @@ export default function App() {
     return () => {
       if (progressInterval) clearInterval(progressInterval)
     }
-  }, [playing, ytReady])
+  }, [playing, ytReady, listeningMode, dynamicTotal])
+
+  const playModeOrPlaylist = (modeName: string) => {
+    setListeningMode(modeName)
+    const playlistId = PLAYLISTS[modeName]
+    if (playlistId && ytPlayerRef.current && ytReady) {
+      try {
+        ytPlayerRef.current.loadPlaylist({
+          list: playlistId,
+          listType: "playlist",
+          index: 0,
+          startSeconds: 0,
+        })
+        setPlaying(true)
+      } catch (e) {
+        console.warn("loadPlaylist error:", e)
+      }
+    } else {
+      setDynamicTrack(null)
+      setDynamicTotal(null)
+      setCurrentSong(Math.floor(Math.random() * SONGS.length))
+      setPlaying(true)
+    }
+  }
 
   // Scrub handler
   const handleProgressChange = (newProgress: number) => {
@@ -459,8 +503,31 @@ export default function App() {
     })
   }, [])
 
-  const prev = () => { setCurrentSong(s => (s - 1 + SONGS.length) % SONGS.length); setProgress(0) }
-  const next = () => { setCurrentSong(s => (s + 1) % SONGS.length); setProgress(0) }
+  const prev = () => {
+    if (listeningMode && PLAYLISTS[listeningMode] && ytPlayerRef.current?.previousVideo) {
+      try {
+        ytPlayerRef.current.previousVideo()
+      } catch (e) {}
+    } else {
+      setDynamicTrack(null)
+      setDynamicTotal(null)
+      setCurrentSong(s => (s - 1 + SONGS.length) % SONGS.length)
+      setProgress(0)
+    }
+  }
+
+  const next = () => {
+    if (listeningMode && PLAYLISTS[listeningMode] && ytPlayerRef.current?.nextVideo) {
+      try {
+        ytPlayerRef.current.nextVideo()
+      } catch (e) {}
+    } else {
+      setDynamicTrack(null)
+      setDynamicTotal(null)
+      setCurrentSong(s => (s + 1) % SONGS.length)
+      setProgress(0)
+    }
+  }
   const closeOverlay = () => setOverlay(null)
 
   const rainShift = { x: mousePos.x * 2.5, y: mousePos.y * 2 }
@@ -719,8 +786,8 @@ export default function App() {
         )}
         <div className="flex items-start justify-between mb-4">
           <div>
-            <p className="serif font-medium" style={{ color: "rgba(240,226,190,0.95)", fontSize: "1rem", lineHeight: 1.2 }}>{song.title}</p>
-            <p className="handwritten mt-1" style={{ color: "rgba(200,137,31,0.6)", fontSize: "0.82rem" }}>{song.artist}</p>
+            <p className="serif font-medium" style={{ color: "rgba(240,226,190,0.95)", fontSize: "1rem", lineHeight: 1.2 }}>{dynamicTrack?.title || song.title}</p>
+            <p className="handwritten mt-1" style={{ color: "rgba(200,137,31,0.6)", fontSize: "0.82rem" }}>{dynamicTrack?.artist || song.artist}</p>
           </div>
           <div className="flex items-center gap-4 mt-0.5">
             <button onClick={() => setLiked(l => !l)} className="bg-transparent border-none cursor-pointer p-0 transition-all duration-200 hover:scale-110" style={{ color: liked ? "#e8a94a" : "rgba(200,137,31,0.35)" }}>
@@ -745,10 +812,10 @@ export default function App() {
           <span className="handwritten tabular-nums" style={{ color: "rgba(200,137,31,0.45)", fontSize: "0.68rem", minWidth: "30px" }}>{formatTime(progress)}</span>
           <div className="relative flex-1 flex items-center" style={{ height: "3px" }}>
             <div className="absolute inset-0 rounded-full" style={{ background: "rgba(200,137,31,0.15)" }} />
-            <div className="absolute left-0 top-0 h-full rounded-full" style={{ width: `${(progress / song.total) * 100}%`, background: "linear-gradient(90deg, #a06818, #e8a94a)" }} />
-            <input type="range" min={0} max={song.total} value={progress} onChange={e => handleProgressChange(Number(e.target.value))} className="absolute inset-0 w-full opacity-0 cursor-pointer" style={{ height: "100%" }} />
+            <div className="absolute left-0 top-0 h-full rounded-full" style={{ width: `${(progress / (dynamicTotal || song.total)) * 100}%`, background: "linear-gradient(90deg, #a06818, #e8a94a)" }} />
+            <input type="range" min={0} max={dynamicTotal || song.total} value={progress} onChange={e => handleProgressChange(Number(e.target.value))} className="absolute inset-0 w-full opacity-0 cursor-pointer" style={{ height: "100%" }} />
           </div>
-          <span className="handwritten tabular-nums" style={{ color: "rgba(200,137,31,0.35)", fontSize: "0.68rem", minWidth: "30px", textAlign: "right" }}>{song.duration}</span>
+          <span className="handwritten tabular-nums" style={{ color: "rgba(200,137,31,0.35)", fontSize: "0.68rem", minWidth: "30px", textAlign: "right" }}>{dynamicTotal ? formatTime(dynamicTotal) : song.duration}</span>
         </div>
 
         <div className="flex items-center justify-center gap-8">
@@ -820,9 +887,7 @@ export default function App() {
             <button
               key={item}
               onClick={() => {
-                setListeningMode(item)
-                setCurrentSong(Math.floor(Math.random() * SONGS.length))
-                setPlaying(true)
+                playModeOrPlaylist(item)
                 setOverlay(null)
               }}
               className="text-left py-1 px-2 rounded-lg border-none cursor-pointer bg-transparent hover:bg-amber-warm/20 transition-all text-base flex items-center gap-1.5"
@@ -860,6 +925,22 @@ export default function App() {
                   <div className="flex flex-col gap-2">
                     {WHITEBOARD_SECTIONS[whiteboardTab].songs.map((item, i) => (
                       <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200" style={{ borderBottom: "1px solid rgba(200,137,31,0.08)" }}
+                        onClick={() => {
+                          if (PLAYLISTS[item]) {
+                            playModeOrPlaylist(item)
+                          } else {
+                            const songIdx = SONGS.findIndex(s => s.title.toLowerCase() === item.toLowerCase())
+                            if (songIdx !== -1) {
+                              setDynamicTrack(null)
+                              setDynamicTotal(null)
+                              setCurrentSong(songIdx)
+                              setPlaying(true)
+                            } else {
+                              playModeOrPlaylist(item)
+                            }
+                          }
+                          closeOverlay()
+                        }}
                         onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.07)"}
                         onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
                       >
@@ -910,7 +991,7 @@ export default function App() {
                 <div className="flex flex-col gap-3">
                   {LISTENING_MODES.map(mode => (
                     <button key={mode} onClick={() => {
-                      setListeningMode(mode)
+                      playModeOrPlaylist(mode)
                       setHeadphoneSwing(true)
                       setTimeout(() => setHeadphoneSwing(false), 1200)
                       closeOverlay()
