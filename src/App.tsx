@@ -267,8 +267,8 @@ export default function App() {
 
     const initPlayer = () => {
       ytPlayerRef.current = new (window as any).YT.Player("yt-player", {
-        height: "1",
-        width: "1",
+        height: "200",
+        width: "200",
         videoId: song.ytId,
         playerVars: {
           playsinline: 1,
@@ -452,16 +452,21 @@ export default function App() {
       onMouseMove={handleMouseMove}
       onClick={resumeAudio}
     >
-      {/* Hidden YouTube Iframe Container */}
-      <div id="yt-player" className="absolute pointer-events-none opacity-0" style={{ width: "1px", height: "1px", left: "-9999px" }} />
+      {/* Background YouTube Iframe Container (masked behind illustration layer to satisfy autoplay/rendering visibility rules) */}
+      <div 
+        id="yt-player" 
+        className="absolute pointer-events-none" 
+        style={{ width: "200px", height: "200px", left: "20px", top: "20px", zIndex: 0, opacity: 0.001 }} 
+      />
 
-      {/* ── Illustration ── */}
+      {/* ── Illustration (Renders on top of YT player iframe) ── */}
       <div
         className="absolute inset-0"
         style={{
           transform: `translate(${rainShift.x}px, ${rainShift.y}px) scale(1.01)`,
           transition: "transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94)",
           filter: (lampOn ? "brightness(1)" : "brightness(0.65) saturate(0.5)") + " " + activeAmbient.filter,
+          zIndex: 10,
         }}
       >
         <img
