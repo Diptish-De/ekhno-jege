@@ -615,55 +615,53 @@ export default function App() {
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, transparent 38%, rgba(8,4,1,0.62) 100%)" }} />
 
       {/* ── Bengali title — upper center ── */}
-      <div className="absolute z-20 flex justify-center pointer-events-none fade-in" style={{ top: "8%", left: 0, right: 0 }}>
+      <div className="absolute z-20 flex justify-center pointer-events-none fade-in px-4" style={{ top: "clamp(12px, 3vh, 32px)", left: 0, right: 0 }}>
         <img
           src={titleLogo}
           alt="এখনও জেগে"
-          className="select-none"
-          style={{ width: "360px", filter: "drop-shadow(0 4px 28px rgba(0,0,0,0.95))" }}
+          className="select-none max-w-[70vw] sm:max-w-[340px] md:max-w-[360px] h-auto object-contain"
+          style={{ filter: "drop-shadow(0 4px 28px rgba(0,0,0,0.95))" }}
           draggable={false}
         />
       </div>
 
       {/* ── Night owls counter — bottom center ── */}
-      <div className="absolute z-30 handwritten fade-in flex justify-center items-center gap-1.5" style={{ bottom: "3.5%", left: 0, right: 0, color: "rgba(200,137,31,0.5)", fontSize: "0.75rem", whiteSpace: "nowrap" }}>
+      <div className="absolute z-30 handwritten fade-in flex justify-center items-center gap-1.5 px-3 pointer-events-none" style={{ bottom: "max(12px, env(safe-area-inset-bottom, 12px))", left: 0, right: 0, color: "rgba(200,137,31,0.55)", fontSize: "clamp(0.68rem, 2.2vw, 0.78rem)", whiteSpace: "nowrap" }}>
         <span className="inline-block animate-pulse">🌙</span> {nightOwls} people are still awake
       </div>
 
-      {/* ── Nav — top right (Horizontal Row) ── */}
-      <nav className="absolute top-6 right-10 z-20 flex flex-row items-center gap-6 fade-in" style={{ animationDelay: "0.3s" }}>
+      {/* ── Nav — top right on desktop, top floating pill row on mobile ── */}
+      <nav className="absolute top-3 right-3 sm:top-5 sm:right-6 md:top-6 md:right-10 z-30 flex flex-wrap justify-end items-center gap-2 sm:gap-4 md:gap-6 fade-in max-w-[95vw]" style={{ animationDelay: "0.3s" }}>
         {[
           { label: "🌙 Tonight", key: "clock" as Overlay, click: () => {} },
           { label: "📼 Mixtapes", key: "headphones" as Overlay, click: () => {} },
-          { label: "📌 Pinned Songs", key: "whiteboard" as Overlay, click: () => { setWhiteboardTab(3); } },
+          { label: "📌 Pinned", key: "whiteboard" as Overlay, click: () => { setWhiteboardTab(3); } },
           { label: "📓 Notes", key: "notes" as Overlay, click: () => {} },
-          { label: "☕ Tea Stall", key: "teaStall" as Overlay, click: () => {} },
+          { label: "☕ Chai", key: "teaStall" as Overlay, click: () => {} },
         ].map(({ label, key, click }) => (
-          <span
+          <button
             key={label}
-            className="handwritten cursor-pointer transition-all duration-300"
-            style={{ color: "rgba(212,168,67,0.4)", fontSize: "0.95rem" }}
+            className="handwritten cursor-pointer transition-all duration-300 px-2.5 py-1 sm:px-0 sm:py-0 rounded-full sm:rounded-none bg-black/40 sm:bg-transparent border border-amber/20 sm:border-none backdrop-blur-sm sm:backdrop-blur-none"
+            style={{ color: overlay === key ? "rgba(232,169,74,0.95)" : "rgba(212,168,67,0.7)", fontSize: "clamp(0.78rem, 2.6vw, 0.95rem)" }}
             onClick={() => {
               if (click) click();
               if (key) setOverlay(o => o === key ? null : key);
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = "rgba(232,169,74,0.82)")}
-            onMouseLeave={e => (e.currentTarget.style.color = "rgba(212,168,67,0.4)")}
           >
             {label}
-          </span>
+          </button>
         ))}
       </nav>
 
       {/* ── Window Latch Rain Toggle Hotspot ── */}
       <div
         className="absolute z-20 cursor-pointer group"
-        style={{ top: "40%", left: "10%", width: "4%", height: "7%" }}
+        style={{ top: "36%", left: "6%", width: "12%", height: "12%", minWidth: "44px", minHeight: "44px" }}
         onClick={() => setRainOn(r => !r)}
         title={rainOn ? "Turn off rain sound" : "Turn on rain sound"}
       >
-        <div className="absolute inset-0 rounded bg-amber-warm/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <span className="text-[10px] handwritten text-amber-warm select-none whitespace-nowrap bg-soft-black/80 px-2 py-0.5 rounded border border-amber/30">
+        <div className="absolute inset-0 rounded-lg bg-amber-warm/5 sm:opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <span className="text-[10px] sm:text-xs handwritten text-amber-warm select-none whitespace-nowrap bg-soft-black/85 px-2 py-0.5 rounded border border-amber/30 shadow-md">
             {rainOn ? "🌧 Close Latch" : "🌧 Open Latch"}
           </span>
         </div>
@@ -672,35 +670,34 @@ export default function App() {
       {/* ── Tea stall hotspot — aligned exactly over the yellow board sign ── */}
       <div
         className="absolute z-20 cursor-pointer group"
-        style={{ top: "57%", left: "9%", width: "7.5%", height: "6%" }}
+        style={{ top: "54%", left: "6%", width: "16%", height: "10%", minWidth: "50px", minHeight: "44px" }}
         onClick={() => setOverlay(o => o === "teaStall" ? null : "teaStall")}
       >
         <div
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 handwritten font-semibold text-center select-none"
-          style={{ color: "rgba(232,169,74,0.85)", fontSize: "0.72rem", whiteSpace: "nowrap", borderBottom: "1.5px solid rgba(232,169,74,0.5)", paddingBottom: "1.5px" }}
+          className="absolute bottom-1 left-1/2 -translate-x-1/2 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 handwritten font-semibold text-center select-none bg-black/40 sm:bg-transparent px-1.5 py-0.5 rounded"
+          style={{ color: "rgba(232,169,74,0.9)", fontSize: "clamp(0.68rem, 2vw, 0.76rem)", whiteSpace: "nowrap", borderBottom: "1.5px solid rgba(232,169,74,0.5)" }}
         >
-          ☕ tea stall [T]
+          ☕ tea stall
         </div>
       </div>
 
       {/* ── Bookshelf hotspots (bottom-left) ── */}
       <div
         className="absolute z-20"
-        style={{ top: "62%", left: "2%", width: "14%", height: "30%" }}
+        style={{ top: "64%", left: "2%", width: "20%", height: "30%" }}
       >
         {BOOKS.map((book, idx) => (
           <div
             key={idx}
             className="absolute cursor-pointer group"
             style={{
-              top: `${10 + idx * 16}%`,
-              left: "10%",
-              width: "80%",
-              height: "14%",
+              top: `${8 + idx * 17}%`,
+              left: "5%",
+              width: "90%",
+              height: "16%",
             }}
             onClick={() => {
               if (idx === 4) {
-                // About the Creator (notebook)
                 setOverlay("notes")
               } else {
                 setListeningMode(book.playlist)
@@ -709,35 +706,34 @@ export default function App() {
               }
             }}
           >
-            {/* hover glow */}
             <div className="absolute inset-0 bg-amber-warm/5 opacity-0 group-hover:opacity-100 transition-opacity rounded" />
-            <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-soft-black/90 text-amber-warm text-[10px] handwritten px-2 py-0.5 rounded border border-amber/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-30">
+            <div className="absolute left-full ml-1 sm:ml-2 top-1/2 -translate-y-1/2 bg-soft-black/90 text-amber-warm text-[10px] handwritten px-2 py-0.5 rounded border border-amber/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-30">
               📖 {book.title}
             </div>
           </div>
         ))}
       </div>
 
-      {/* ── Headphones hotspot — aligned over the physical headphones on the desk ── */}
+      {/* ── Headphones hotspot ── */}
       <div
         className={`absolute z-20 cursor-pointer group ${headphoneSwing ? "swing" : ""}`}
-        style={{ top: "80%", left: "18%", width: "10%", height: "10%" }}
+        style={{ top: "78%", left: "16%", width: "14%", height: "12%", minWidth: "44px", minHeight: "44px" }}
         onClick={() => {
           setOverlay(o => o === "headphones" ? null : "headphones")
         }}
       >
         <div
-          className="absolute -top-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 handwritten font-semibold text-center select-none"
-          style={{ color: "rgba(232,169,74,0.85)", fontSize: "0.72rem", whiteSpace: "nowrap", borderBottom: "1.5px solid rgba(232,169,74,0.5)", paddingBottom: "1.5px" }}
+          className="absolute -top-5 sm:-top-7 left-1/2 -translate-x-1/2 opacity-90 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 handwritten font-semibold text-center select-none bg-black/40 sm:bg-transparent px-1.5 py-0.5 rounded"
+          style={{ color: "rgba(232,169,74,0.9)", fontSize: "clamp(0.68rem, 2vw, 0.74rem)", whiteSpace: "nowrap", borderBottom: "1.5px solid rgba(232,169,74,0.5)" }}
         >
-          🎧 listening mode
+          🎧 mixtape
         </div>
       </div>
 
       {/* ── Spider-Man poster 3D flip ── */}
       <div
         className="absolute z-20 cursor-pointer"
-        style={{ top: "8%", right: "0%", width: "6%", height: "48%" }}
+        style={{ top: "8%", right: "0%", width: "10%", maxWidth: "60px", height: "48%" }}
         onMouseEnter={() => setSpiderHover(true)}
         onMouseLeave={() => setSpiderHover(false)}
         onClick={() => { 
@@ -777,146 +773,162 @@ export default function App() {
       {/* ── Lamp toggle hotspot ── */}
       <div
         className="absolute z-20 cursor-pointer"
-        style={{ bottom: "28%", left: "28%", width: "6%", height: "12%", background: "transparent" }}
+        style={{ bottom: "28%", left: "26%", width: "10%", height: "14%", background: "transparent" }}
         onClick={() => setLampOn(l => !l)}
         title={lampOn ? "Turn lamp off" : "Turn lamp on"}
       />
 
-      {/* ── Music player — centered bottom ── */}
+      {/* ── Music player — fully responsive card ── */}
       <div
-        className="absolute z-30 fade-in"
+        className="absolute z-30 fade-in transition-all duration-300"
         style={{
-          bottom: "7%", left: "calc(50% - 250px)", width: "500px",
-          borderRadius: "20px", padding: "18px 26px 20px", animationDelay: "0.6s",
-          background: "rgba(14, 8, 3, 0.08)",
-          backdropFilter: "blur(20px) saturate(1.4)",
-          WebkitBackdropFilter: "blur(20px) saturate(1.4)",
-          border: "1px solid rgba(200,137,31,0.08)",
-          boxShadow: "0 8px 48px rgba(0,0,0,0.6), inset 0 1px 0 rgba(232,169,74,0.04)",
+          bottom: "clamp(36px, 6.5vh, 60px)",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "calc(100% - 32px)",
+          maxWidth: "480px",
+          borderRadius: "20px",
+          padding: "clamp(12px, 3vw, 18px) clamp(14px, 4vw, 24px)",
+          animationDelay: "0.6s",
+          background: "rgba(14, 8, 3, 0.45)",
+          backdropFilter: "blur(24px) saturate(1.4)",
+          WebkitBackdropFilter: "blur(24px) saturate(1.4)",
+          border: "1px solid rgba(200,137,31,0.14)",
+          boxShadow: "0 8px 48px rgba(0,0,0,0.7), inset 0 1px 0 rgba(232,169,74,0.06)",
         }}
       >
         {listeningMode && (
-          <div className="handwritten text-center mb-2" style={{ color: "rgba(200,137,31,0.55)", fontSize: "0.7rem", letterSpacing: "0.1em" }}>
-            {listeningMode.toUpperCase()} MODE
+          <div className="handwritten text-center mb-1.5" style={{ color: "rgba(200,137,31,0.75)", fontSize: "0.72rem", letterSpacing: "0.1em" }}>
+            ✨ {listeningMode.toUpperCase()} MODE
           </div>
         )}
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <p className="serif font-medium" style={{ color: "rgba(240,226,190,0.95)", fontSize: "1rem", lineHeight: 1.2 }}>{dynamicTrack?.title || song.title}</p>
-            <p className="handwritten mt-1" style={{ color: "rgba(200,137,31,0.6)", fontSize: "0.82rem" }}>{dynamicTrack?.artist || song.artist}</p>
+        <div className="flex items-center justify-between gap-3 mb-2.5 sm:mb-3">
+          <div className="min-w-0 flex-1">
+            <p className="serif font-medium truncate" style={{ color: "rgba(240,226,190,0.95)", fontSize: "clamp(0.88rem, 3.2vw, 1.05rem)", lineHeight: 1.2 }}>{dynamicTrack?.title || song.title}</p>
+            <p className="handwritten mt-0.5 truncate" style={{ color: "rgba(200,137,31,0.75)", fontSize: "clamp(0.76rem, 2.8vw, 0.85rem)" }}>{dynamicTrack?.artist || song.artist}</p>
           </div>
-          <div className="flex items-center gap-4 mt-0.5">
-            <button onClick={() => setLiked(l => !l)} className="bg-transparent border-none cursor-pointer p-0 transition-all duration-200 hover:scale-110" style={{ color: liked ? "#e8a94a" : "rgba(200,137,31,0.35)" }}>
+          <div className="flex items-center gap-3 shrink-0">
+            <button onClick={() => setLiked(l => !l)} className="bg-transparent border-none cursor-pointer p-1.5 transition-all duration-200 hover:scale-110 active:scale-95" style={{ color: liked ? "#e8a94a" : "rgba(200,137,31,0.45)" }}>
               {liked ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="text-amber-warm"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" className="text-amber-warm"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
               ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
               )}
             </button>
-            <button onClick={() => setLooping(l => !l)} className="bg-transparent border-none cursor-pointer p-0 transition-all duration-200" style={{ color: looping ? "#e8a94a" : "rgba(200,137,31,0.35)" }}>
+            <button onClick={() => setLooping(l => !l)} className="bg-transparent border-none cursor-pointer p-1.5 transition-all duration-200 hover:scale-110 active:scale-95" style={{ color: looping ? "#e8a94a" : "rgba(200,137,31,0.45)" }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={looping ? "text-amber-warm" : ""}>
                 <polyline points="23 4 23 10 17 10"></polyline>
                 <polyline points="1 20 1 14 7 14"></polyline>
                 <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
               </svg>
             </button>
+            {/* Quick Queue Toggle on mobile inside player */}
+            <button onClick={() => setDrawerOpen(d => !d)} className="sm:hidden bg-transparent border border-amber/30 rounded-lg p-1.5 cursor-pointer text-amber-warm/80 text-xs handwritten flex items-center gap-1 active:scale-95">
+              <span>📋</span>
+            </button>
           </div>
         </div>
 
         {/* Progress */}
-        <div className="flex items-center gap-3 mb-4">
-          <span className="handwritten tabular-nums" style={{ color: "rgba(200,137,31,0.45)", fontSize: "0.68rem", minWidth: "30px" }}>{formatTime(progress)}</span>
-          <div className="relative flex-1 flex items-center" style={{ height: "3px" }}>
-            <div className="absolute inset-0 rounded-full" style={{ background: "rgba(200,137,31,0.15)" }} />
-            <div className="absolute left-0 top-0 h-full rounded-full" style={{ width: `${(progress / (dynamicTotal || song.total)) * 100}%`, background: "linear-gradient(90deg, #a06818, #e8a94a)" }} />
+        <div className="flex items-center gap-2.5 mb-2.5 sm:mb-3">
+          <span className="handwritten tabular-nums" style={{ color: "rgba(200,137,31,0.55)", fontSize: "0.72rem", minWidth: "28px" }}>{formatTime(progress)}</span>
+          <div className="relative flex-1 flex items-center py-2 cursor-pointer" style={{ height: "16px" }}>
+            <div className="w-full rounded-full relative" style={{ height: "4px", background: "rgba(200,137,31,0.2)" }}>
+              <div className="absolute left-0 top-0 h-full rounded-full transition-[width] duration-150" style={{ width: `${(progress / (dynamicTotal || song.total)) * 100}%`, background: "linear-gradient(90deg, #a06818, #e8a94a)" }} />
+            </div>
             <input type="range" min={0} max={dynamicTotal || song.total} value={progress} onChange={e => handleProgressChange(Number(e.target.value))} className="absolute inset-0 w-full opacity-0 cursor-pointer" style={{ height: "100%" }} />
           </div>
-          <span className="handwritten tabular-nums" style={{ color: "rgba(200,137,31,0.35)", fontSize: "0.68rem", minWidth: "30px", textAlign: "right" }}>{dynamicTotal ? formatTime(dynamicTotal) : song.duration}</span>
+          <span className="handwritten tabular-nums" style={{ color: "rgba(200,137,31,0.45)", fontSize: "0.72rem", minWidth: "28px", textAlign: "right" }}>{dynamicTotal ? formatTime(dynamicTotal) : song.duration}</span>
         </div>
 
-        <div className="flex items-center justify-center gap-8">
-          <button onClick={prev} className="bg-transparent border-none cursor-pointer p-0 flex items-center justify-center" title="Previous Song">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-warm opacity-80 hover:opacity-100 hover:scale-105 transition-all duration-200"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
+        <div className="flex items-center justify-center gap-7 sm:gap-9">
+          <button onClick={prev} className="bg-transparent border-none cursor-pointer p-2 flex items-center justify-center active:scale-90" title="Previous Song">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-warm opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-200"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
           </button>
           <button
             onClick={togglePlay}
-            className="flex items-center justify-center rounded-full border-none cursor-pointer transition-all duration-255 hover:scale-105 animate-glow"
-            style={{ width: "44px", height: "44px", background: "radial-gradient(circle at 40% 35%, rgba(232,169,74,0.22) 0%, rgba(160,104,24,0.14) 100%)", border: "1px solid rgba(200,137,31,0.4)", color: "#e8a94a", boxShadow: "0 0 14px rgba(200,137,31,0.15)" }}
+            className="flex items-center justify-center rounded-full border-none cursor-pointer transition-all duration-200 hover:scale-105 active:scale-95 animate-glow"
+            style={{ width: "46px", height: "46px", background: "radial-gradient(circle at 40% 35%, rgba(232,169,74,0.28) 0%, rgba(160,104,24,0.18) 100%)", border: "1px solid rgba(200,137,31,0.5)", color: "#e8a94a", boxShadow: "0 0 16px rgba(200,137,31,0.22)" }}
           >
             {playing ? (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
             ) : (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
             )}
           </button>
-          <button onClick={next} className="bg-transparent border-none cursor-pointer p-0 flex items-center justify-center" title="Next Song">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-warm opacity-80 hover:opacity-100 hover:scale-105 transition-all duration-200"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+          <button onClick={next} className="bg-transparent border-none cursor-pointer p-2 flex items-center justify-center active:scale-90" title="Next Song">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-warm opacity-85 hover:opacity-100 hover:scale-105 transition-all duration-200"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
           </button>
         </div>
       </div>
 
-      {/* ── Playlist drawer ── */}
+      {/* ── Playlist drawer handle — hidden on very small screens, integrated into player ── */}
       <button
-        className="absolute z-30 handwritten cursor-pointer"
+        className="hidden sm:block absolute z-30 handwritten cursor-pointer"
         style={{
-          right: drawerOpen ? "calc(25% + 4px)" : "0", top: "50%", transform: "translateY(-50%)",
-          background: "rgba(20,12,5,0.7)", border: "1px solid rgba(200,137,31,0.2)", borderRight: "none",
-          color: "rgba(212,168,67,0.55)", padding: "12px 8px", borderRadius: "8px 0 0 8px",
-          fontSize: "0.7rem", writingMode: "vertical-rl", letterSpacing: "0.1em",
-          backdropFilter: "blur(8px)", transition: "right 0.35s ease",
+          right: drawerOpen ? "min(340px, 85vw)" : "0", top: "50%", transform: "translateY(-50%)",
+          background: "rgba(20,12,5,0.85)", border: "1px solid rgba(200,137,31,0.25)", borderRight: "none",
+          color: "rgba(212,168,67,0.7)", padding: "12px 8px", borderRadius: "8px 0 0 8px",
+          fontSize: "0.75rem", writingMode: "vertical-rl", letterSpacing: "0.1em",
+          backdropFilter: "blur(12px)", transition: "right 0.35s ease",
         }}
         onClick={() => setDrawerOpen(d => !d)}
       >
         {drawerOpen ? "close" : "tonight's queue"}
       </button>
 
+      {/* ── Playlist Drawer Modal/Panel ── */}
       {drawerOpen && (
-        <div className="absolute right-0 top-0 h-full z-20 drawer-in flex flex-col" style={{ width: "28%", minWidth: "260px", maxWidth: "340px", padding: "32px 24px 20px", background: "rgba(14,8,3,0.85)", backdropFilter: "blur(24px)", borderLeft: "1px solid rgba(200,137,31,0.12)" }}>
-          <h3 className="handwritten mb-4 shrink-0" style={{ color: "rgba(212,168,67,0.8)", fontSize: "1.1rem", borderBottom: "1px solid rgba(200,137,31,0.18)", paddingBottom: "12px" }}>Tonight's Queue</h3>
-          <div className="flex flex-col gap-1 overflow-y-auto flex-1 pr-1" style={{ maxHeight: "calc(100vh - 120px)" }}>
-            {SONGS.map((s, i) => (
-              <button 
-                key={i} 
-                onClick={() => { 
-                  setListeningMode(null);
-                  setDynamicTrack(null);
-                  setDynamicTotal(null);
-                  setCurrentSong(i); 
-                  setProgress(0); 
-                  setPlaying(true); 
-                  if (ytPlayerRef.current && ytReady) {
-                    try {
-                      ytPlayerRef.current.loadVideoById({ videoId: s.ytId, startSeconds: 0 });
-                      ytPlayerRef.current.playVideo();
-                    } catch(e) {
-                      console.warn("Direct play failed:", e);
+        <>
+          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm sm:hidden" onClick={() => setDrawerOpen(false)} />
+          <div className="absolute right-0 top-0 h-full z-50 drawer-in flex flex-col w-full sm:w-[85vw] md:w-[320px] max-w-[360px] p-6 sm:p-7" style={{ background: "rgba(14,8,3,0.94)", backdropFilter: "blur(28px)", borderLeft: "1px solid rgba(200,137,31,0.18)" }}>
+            <div className="flex justify-between items-center mb-4 shrink-0 border-b border-amber/20 pb-3">
+              <h3 className="handwritten text-lg font-bold" style={{ color: "rgba(212,168,67,0.9)" }}>Tonight's Queue</h3>
+              <button onClick={() => setDrawerOpen(false)} className="handwritten text-xs px-2 py-1 rounded border border-amber/30 text-amber-warm bg-transparent cursor-pointer">close</button>
+            </div>
+            <div className="flex flex-col gap-1 overflow-y-auto flex-1 pr-1">
+              {SONGS.map((s, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => { 
+                    setListeningMode(null);
+                    setDynamicTrack(null);
+                    setDynamicTotal(null);
+                    setCurrentSong(i); 
+                    setProgress(0); 
+                    setPlaying(true); 
+                    if (ytPlayerRef.current && ytReady) {
+                      try {
+                        ytPlayerRef.current.loadVideoById({ videoId: s.ytId, startSeconds: 0 });
+                        ytPlayerRef.current.playVideo();
+                      } catch(e) {
+                        console.warn("Direct play failed:", e);
+                      }
                     }
-                  }
-                }} 
-                className="flex items-start gap-3 text-left py-3 px-2 rounded-lg bg-transparent border-none cursor-pointer transition-all" 
-                style={{ background: currentSong === i && !listeningMode ? "rgba(200,137,31,0.15)" : "transparent", borderBottom: "1px solid rgba(200,137,31,0.08)" }}
-                onMouseEnter={e => { if (currentSong !== i || listeningMode) (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.07)" }}
-                onMouseLeave={e => { if (currentSong !== i || listeningMode) (e.currentTarget as HTMLElement).style.background = "transparent" }}
-              >
-                <span className="handwritten text-xs mt-0.5" style={{ color: "rgba(200,137,31,0.4)", minWidth: "18px" }}>{String(i + 1).padStart(2, "0")}.</span>
-                <div>
-                  <p className="serif text-xs" style={{ color: currentSong === i && !listeningMode ? "rgba(232,169,74,0.95)" : "rgba(240,230,200,0.7)", fontSize: "0.8rem" }}>{s.title}</p>
-                  <p className="handwritten text-xs" style={{ color: "rgba(200,137,31,0.4)", fontSize: "0.7rem" }}>{s.artist}</p>
-                </div>
-              </button>
-            ))}
+                  }} 
+                  className="flex items-start gap-3 text-left py-2.5 px-2.5 rounded-lg bg-transparent border-none cursor-pointer transition-all active:bg-amber-warm/15" 
+                  style={{ background: currentSong === i && !listeningMode ? "rgba(200,137,31,0.18)" : "transparent", borderBottom: "1px solid rgba(200,137,31,0.08)" }}
+                >
+                  <span className="handwritten text-xs mt-0.5" style={{ color: "rgba(200,137,31,0.5)", minWidth: "18px" }}>{String(i + 1).padStart(2, "0")}.</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="serif text-xs truncate" style={{ color: currentSong === i && !listeningMode ? "rgba(232,169,74,0.95)" : "rgba(240,230,200,0.8)", fontSize: "0.85rem" }}>{s.title}</p>
+                    <p className="handwritten text-xs truncate" style={{ color: "rgba(200,137,31,0.55)", fontSize: "0.72rem" }}>{s.artist}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <p className="handwritten text-center shrink-0 pt-3" style={{ color: "rgba(200,137,31,0.4)", fontSize: "0.7rem" }}>03:42 AM — still awake</p>
           </div>
-          <p className="handwritten text-center shrink-0 pt-3" style={{ color: "rgba(200,137,31,0.25)", fontSize: "0.65rem" }}>03:42 AM — still awake</p>
-        </div>
+        </>
       )}
 
       {/* ── Tea Stall Sliding Paper Menu ── */}
       <div className={`sliding-paper-menu ${overlay === 'teaStall' ? 'open' : ''}`}>
         <div className="flex justify-between items-center mb-3 border-b border-brown-mid/20 pb-2">
-          <span className="text-lg font-bold">☕ Tea Stall Recommendations</span>
-          <button onClick={() => setOverlay(null)} className="cursor-pointer text-xs border border-brown-mid/30 hover:bg-brown-mid/10 rounded-full px-2 py-0.5 font-bold">close</button>
+          <span className="text-base sm:text-lg font-bold">☕ Tea Stall Recommendations</span>
+          <button onClick={() => setOverlay(null)} className="cursor-pointer text-xs border border-brown-mid/30 hover:bg-brown-mid/10 rounded-full px-2.5 py-0.5 font-bold">close</button>
         </div>
-        <p className="serif text-[13px] italic mb-3 opacity-80 leading-snug">The chaiwala knows exactly what you need to keep going.</p>
+        <p className="serif text-[12px] sm:text-[13px] italic mb-3 opacity-85 leading-snug">The chaiwala knows exactly what you need to keep going.</p>
         <div className="flex flex-col gap-1.5">
           {TEA_MENU.map((item) => (
             <button
@@ -925,7 +937,7 @@ export default function App() {
                 playModeOrPlaylist(item)
                 setOverlay(null)
               }}
-              className="text-left py-1 px-2 rounded-lg border-none cursor-pointer bg-transparent hover:bg-amber-warm/20 transition-all text-base flex items-center gap-1.5"
+              className="text-left py-1.5 px-2.5 rounded-lg border-none cursor-pointer bg-transparent hover:bg-amber-warm/20 transition-all text-sm sm:text-base flex items-center gap-1.5"
               style={{ color: "#533918" }}
             >
               • {item}
@@ -939,27 +951,27 @@ export default function App() {
       ══════════════════════════════════════════════ */}
 
       {overlay && overlay !== "teaStall" && (
-        <div className="absolute inset-0 z-40 flex items-center justify-center overlay-in" style={{ background: "rgba(8,4,1,0.82)", backdropFilter: "blur(8px)" }} onClick={closeOverlay}>
-          <div onClick={e => e.stopPropagation()} style={{ maxWidth: "520px", width: "90%" }}>
+        <div className="absolute inset-0 z-40 flex items-center justify-center p-4 overlay-in" style={{ background: "rgba(8,4,1,0.85)", backdropFilter: "blur(12px)" }} onClick={closeOverlay}>
+          <div onClick={e => e.stopPropagation()} className="w-full max-w-[500px] max-h-[85vh] overflow-y-auto">
 
             {/* ── Whiteboard overlay ── */}
             {overlay === "whiteboard" && (
-              <div className="rounded-2xl p-8" style={{ background: "rgba(20,12,5,0.9)", border: "1px solid rgba(200,137,31,0.18)" }}>
-                <p className="handwritten mb-6 text-center" style={{ color: "rgba(200,137,31,0.4)", fontSize: "0.7rem", letterSpacing: "0.15em" }}>WHITEBOARD</p>
-                <div className="flex gap-2 mb-6 flex-wrap justify-center">
+              <div className="rounded-2xl p-5 sm:p-8" style={{ background: "rgba(20,12,5,0.94)", border: "1px solid rgba(200,137,31,0.22)" }}>
+                <p className="handwritten mb-4 text-center" style={{ color: "rgba(200,137,31,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em" }}>WHITEBOARD</p>
+                <div className="flex gap-1.5 sm:gap-2 mb-5 flex-wrap justify-center">
                   {WHITEBOARD_SECTIONS.map((sec, i) => (
-                    <button key={i} onClick={() => setWhiteboardTab(i)} className="handwritten border-none cursor-pointer rounded-full px-3 py-1 text-xs transition-all duration-200"
-                      style={{ background: whiteboardTab === i ? "rgba(200,137,31,0.2)" : "transparent", color: whiteboardTab === i ? "rgba(232,169,74,0.9)" : "rgba(212,168,67,0.4)", border: `1px solid ${whiteboardTab === i ? "rgba(200,137,31,0.4)" : "rgba(200,137,31,0.15)"}` }}
+                    <button key={i} onClick={() => setWhiteboardTab(i)} className="handwritten border-none cursor-pointer rounded-full px-2.5 sm:px-3 py-1 text-xs transition-all duration-200"
+                      style={{ background: whiteboardTab === i ? "rgba(200,137,31,0.2)" : "transparent", color: whiteboardTab === i ? "rgba(232,169,74,0.95)" : "rgba(212,168,67,0.5)", border: `1px solid ${whiteboardTab === i ? "rgba(200,137,31,0.4)" : "rgba(200,137,31,0.15)"}` }}
                     >
                       {sec.label}
                     </button>
                   ))}
                 </div>
                 <div>
-                  <p className="handwritten mb-4 text-center" style={{ color: "rgba(200,137,31,0.5)", fontSize: "0.75rem" }}>{WHITEBOARD_SECTIONS[whiteboardTab].icon} {WHITEBOARD_SECTIONS[whiteboardTab].action}</p>
-                  <div className="flex flex-col gap-2">
+                  <p className="handwritten mb-3 text-center" style={{ color: "rgba(200,137,31,0.65)", fontSize: "0.8rem" }}>{WHITEBOARD_SECTIONS[whiteboardTab].icon} {WHITEBOARD_SECTIONS[whiteboardTab].action}</p>
+                  <div className="flex flex-col gap-1.5">
                     {WHITEBOARD_SECTIONS[whiteboardTab].songs.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200" style={{ borderBottom: "1px solid rgba(200,137,31,0.08)" }}
+                      <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 active:bg-amber-warm/15" style={{ borderBottom: "1px solid rgba(200,137,31,0.08)" }}
                         onClick={() => {
                           if (PLAYLISTS[item]) {
                             playModeOrPlaylist(item)
@@ -984,23 +996,21 @@ export default function App() {
                             }
                           }
                         }}
-                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.07)"}
-                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
                       >
-                        <span className="handwritten" style={{ color: "rgba(200,137,31,0.3)", fontSize: "0.65rem", minWidth: "16px" }}>{String(i + 1).padStart(2, "0")}.</span>
-                        <span className="serif" style={{ color: "rgba(240,226,190,0.8)", fontSize: "0.88rem" }}>{item}</span>
+                        <span className="handwritten" style={{ color: "rgba(200,137,31,0.4)", fontSize: "0.7rem", minWidth: "16px" }}>{String(i + 1).padStart(2, "0")}.</span>
+                        <span className="serif text-sm sm:text-base" style={{ color: "rgba(240,226,190,0.85)" }}>{item}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <button onClick={closeOverlay} className="handwritten w-full mt-6 text-xs bg-transparent border-none cursor-pointer hover:opacity-60 transition-opacity" style={{ color: "rgba(200,137,31,0.3)" }}>esc to close</button>
+                <button onClick={closeOverlay} className="handwritten w-full mt-6 text-sm bg-transparent border-none cursor-pointer hover:opacity-75 transition-opacity" style={{ color: "rgba(200,137,31,0.5)" }}>tap anywhere / close</button>
               </div>
             )}
 
             {/* ── Books bookshelf overlay ── */}
             {overlay === "books" && (
-              <div className="rounded-2xl p-8" style={{ background: "rgba(20,12,5,0.92)", border: "1px solid rgba(200,137,31,0.18)" }}>
-                <p className="handwritten mb-6 text-center" style={{ color: "rgba(200,137,31,0.4)", fontSize: "0.7rem", letterSpacing: "0.15em" }}>BOOKSHELF</p>
+              <div className="rounded-2xl p-5 sm:p-8" style={{ background: "rgba(20,12,5,0.94)", border: "1px solid rgba(200,137,31,0.22)" }}>
+                <p className="handwritten mb-5 text-center" style={{ color: "rgba(200,137,31,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em" }}>BOOKSHELF</p>
                 <div className="flex flex-col gap-2">
                   {BOOKS.map((book, i) => (
                     <button key={i} onClick={() => {
@@ -1012,26 +1022,24 @@ export default function App() {
                       } else {
                         showComingSoon(book.playlist)
                       }
-                    }} className="flex items-center justify-between py-3 px-4 rounded-lg bg-transparent border-none cursor-pointer transition-all duration-200 text-left"
+                    }} className="flex items-center justify-between py-2.5 px-3.5 rounded-lg bg-transparent border-none cursor-pointer transition-all duration-200 text-left active:bg-amber-warm/15"
                       style={{ borderBottom: "1px solid rgba(200,137,31,0.08)" }}
-                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.07)"}
-                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
                     >
-                      <span className="serif" style={{ color: "rgba(240,226,190,0.8)", fontSize: "0.85rem" }}>{book.title}</span>
-                      <span className="handwritten" style={{ color: "rgba(200,137,31,0.45)", fontSize: "0.72rem" }}>→ {book.playlist}</span>
+                      <span className="serif text-xs sm:text-sm" style={{ color: "rgba(240,226,190,0.85)" }}>{book.title}</span>
+                      <span className="handwritten text-xs sm:text-sm" style={{ color: "rgba(200,137,31,0.6)" }}>→ {book.playlist}</span>
                     </button>
                   ))}
                 </div>
-                <button onClick={closeOverlay} className="handwritten w-full mt-6 text-xs bg-transparent border-none cursor-pointer hover:opacity-60" style={{ color: "rgba(200,137,31,0.3)" }}>esc to close</button>
+                <button onClick={closeOverlay} className="handwritten w-full mt-6 text-sm bg-transparent border-none cursor-pointer hover:opacity-75" style={{ color: "rgba(200,137,31,0.5)" }}>tap anywhere / close</button>
               </div>
             )}
 
             {/* ── Headphones overlay ── */}
             {overlay === "headphones" && (
-              <div className="rounded-2xl p-8 text-center" style={{ background: "rgba(20,12,5,0.92)", border: "1px solid rgba(200,137,31,0.18)" }}>
-                <p className="handwritten mb-1" style={{ color: "rgba(200,137,31,0.4)", fontSize: "0.65rem", letterSpacing: "0.15em" }}>LISTENING MODE</p>
-                <p className="serif mb-8" style={{ color: "rgba(240,226,190,0.6)", fontStyle: "italic", fontSize: "0.82rem" }}>How do you want to listen tonight?</p>
-                <div className="flex flex-col gap-3">
+              <div className="rounded-2xl p-5 sm:p-8 text-center" style={{ background: "rgba(20,12,5,0.94)", border: "1px solid rgba(200,137,31,0.22)" }}>
+                <p className="handwritten mb-1" style={{ color: "rgba(200,137,31,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em" }}>LISTENING MODE</p>
+                <p className="serif mb-6" style={{ color: "rgba(240,226,190,0.7)", fontStyle: "italic", fontSize: "0.85rem" }}>How do you want to listen tonight?</p>
+                <div className="flex flex-col gap-2.5">
                   {LISTENING_MODES.map(mode => (
                     <button key={mode} onClick={() => {
                       playModeOrPlaylist(mode)
@@ -1039,25 +1047,23 @@ export default function App() {
                       setTimeout(() => setHeadphoneSwing(false), 1200)
                       closeOverlay()
                     }}
-                      className="handwritten py-3 px-6 rounded-full border cursor-pointer transition-all duration-200 bg-transparent"
-                      style={{ color: listeningMode === mode ? "rgba(232,169,74,0.95)" : "rgba(212,168,67,0.65)", borderColor: listeningMode === mode ? "rgba(200,137,31,0.5)" : "rgba(200,137,31,0.2)", fontSize: "1rem", background: listeningMode === mode ? "rgba(200,137,31,0.12)" : "transparent" }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.1)"; (e.currentTarget as HTMLElement).style.color = "rgba(232,169,74,0.9)" }}
-                      onMouseLeave={e => { if (listeningMode !== mode) { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "rgba(212,168,67,0.65)" } }}
+                      className="handwritten py-2.5 px-5 rounded-full border cursor-pointer transition-all duration-200 bg-transparent active:scale-95"
+                      style={{ color: listeningMode === mode ? "rgba(232,169,74,0.95)" : "rgba(212,168,67,0.75)", borderColor: listeningMode === mode ? "rgba(200,137,31,0.6)" : "rgba(200,137,31,0.25)", fontSize: "1rem", background: listeningMode === mode ? "rgba(200,137,31,0.15)" : "transparent" }}
                     >
                       🎧 {mode}
                     </button>
                   ))}
                 </div>
-                <button onClick={closeOverlay} className="handwritten mt-8 text-xs bg-transparent border-none cursor-pointer hover:opacity-60" style={{ color: "rgba(200,137,31,0.3)" }}>esc to close</button>
+                <button onClick={closeOverlay} className="handwritten mt-6 text-sm bg-transparent border-none cursor-pointer hover:opacity-75" style={{ color: "rgba(200,137,31,0.5)" }}>tap anywhere / close</button>
               </div>
             )}
 
             {/* ── Clock / Ambient Selection overlay ── */}
             {overlay === "clock" && (
-              <div className="rounded-2xl p-8 text-center" style={{ background: "rgba(20,12,5,0.92)", border: "1px solid rgba(200,137,31,0.18)" }}>
-                <p className="handwritten mb-2" style={{ color: "rgba(200,137,31,0.4)", fontSize: "0.7rem", letterSpacing: "0.15em" }}>KOLKATA ROOM AMBIENCE</p>
-                <h2 className="serif mb-6" style={{ color: "rgba(240,226,190,0.92)", fontSize: "1.8rem", fontStyle: "italic" }}>Why are you still awake?</h2>
-                <p className="handwritten text-xs text-amber-warm/60 mb-6">Select a night mode to shift the room atmosphere.</p>
+              <div className="rounded-2xl p-5 sm:p-8 text-center" style={{ background: "rgba(20,12,5,0.94)", border: "1px solid rgba(200,137,31,0.22)" }}>
+                <p className="handwritten mb-2" style={{ color: "rgba(200,137,31,0.6)", fontSize: "0.75rem", letterSpacing: "0.15em" }}>KOLKATA ROOM AMBIENCE</p>
+                <h2 className="serif mb-4 text-xl sm:text-2xl" style={{ color: "rgba(240,226,190,0.95)", fontStyle: "italic" }}>Why are you still awake?</h2>
+                <p className="handwritten text-xs text-amber-warm/70 mb-5">Select a night mode to shift the room atmosphere.</p>
                 <div className="flex flex-col gap-2.5">
                   {[
                     { name: "3 AM Thoughts (Deep Night)", hr: 3 },
@@ -1069,46 +1075,39 @@ export default function App() {
                     <button key={pl.name} onClick={() => {
                       setAmbientHour(pl.hr)
                       closeOverlay()
-                    }} className="handwritten py-2.5 px-5 rounded-full border cursor-pointer transition-all duration-200 bg-transparent flex justify-between items-center"
+                    }} className="handwritten py-2 px-4 rounded-full border cursor-pointer transition-all duration-200 bg-transparent flex justify-between items-center text-xs sm:text-sm active:scale-95"
                       style={{
-                        color: ambientHour === pl.hr || (pl.hr === 3 && ambientHour === null) ? "rgba(232,169,74,0.95)" : "rgba(212,168,67,0.7)",
-                        borderColor: ambientHour === pl.hr || (pl.hr === 3 && ambientHour === null) ? "rgba(232,169,74,0.4)" : "rgba(200,137,31,0.2)",
-                        background: ambientHour === pl.hr || (pl.hr === 3 && ambientHour === null) ? "rgba(200,137,31,0.08)" : "transparent"
-                      }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.1)"; (e.currentTarget as HTMLElement).style.color = "rgba(232,169,74,0.9)" }}
-                      onMouseLeave={e => { 
-                        if (ambientHour !== pl.hr && !(pl.hr === 3 && ambientHour === null)) {
-                          (e.currentTarget as HTMLElement).style.background = "transparent";
-                          (e.currentTarget as HTMLElement).style.color = "rgba(212,168,67,0.7)"
-                        }
+                        color: ambientHour === pl.hr || (pl.hr === 3 && ambientHour === null) ? "rgba(232,169,74,0.95)" : "rgba(212,168,67,0.75)",
+                        borderColor: ambientHour === pl.hr || (pl.hr === 3 && ambientHour === null) ? "rgba(232,169,74,0.5)" : "rgba(200,137,31,0.25)",
+                        background: ambientHour === pl.hr || (pl.hr === 3 && ambientHour === null) ? "rgba(200,137,31,0.12)" : "transparent"
                       }}
                     >
-                      <span>✨ {pl.name}</span>
-                      <span className="text-[10px] opacity-50">{pl.hr % 12 === 0 ? 12 : pl.hr % 12} {pl.hr >= 12 ? "PM" : "AM"}</span>
+                      <span className="truncate pr-2">✨ {pl.name}</span>
+                      <span className="text-[10px] opacity-60 shrink-0">{pl.hr % 12 === 0 ? 12 : pl.hr % 12} {pl.hr >= 12 ? "PM" : "AM"}</span>
                     </button>
                   ))}
                 </div>
-                <button onClick={closeOverlay} className="handwritten mt-8 text-xs bg-transparent border-none cursor-pointer hover:opacity-60" style={{ color: "rgba(200,137,31,0.3)" }}>esc to close</button>
+                <button onClick={closeOverlay} className="handwritten mt-6 text-sm bg-transparent border-none cursor-pointer hover:opacity-75" style={{ color: "rgba(200,137,31,0.5)" }}>tap anywhere / close</button>
               </div>
             )}
 
             {/* ── Notebook spiral ruled Notes overlay ── */}
             {overlay === "notes" && (
-              <div className="notebook-ruled rounded-xl p-8 max-h-[70vh] overflow-y-auto">
-                <div className="flex justify-between items-center mb-6 pb-2 border-b border-amber/20">
-                  <p className="handwritten text-lg font-semibold" style={{ color: "rgba(100, 50, 10, 0.85)" }}>📓 TONIGHT'S NOTES</p>
-                  <button onClick={closeOverlay} className="handwritten bg-transparent border-none cursor-pointer hover:opacity-60 text-sm" style={{ color: "rgba(100, 50, 10, 0.6)" }}>close [esc]</button>
+              <div className="notebook-ruled rounded-xl p-5 sm:p-8 max-h-[75vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-5 pb-2 border-b border-amber/20">
+                  <p className="handwritten text-base sm:text-lg font-semibold" style={{ color: "rgba(100, 50, 10, 0.9)" }}>📓 TONIGHT'S NOTES</p>
+                  <button onClick={closeOverlay} className="handwritten bg-transparent border-none cursor-pointer hover:opacity-75 text-xs sm:text-sm" style={{ color: "rgba(100, 50, 10, 0.7)" }}>close [esc]</button>
                 </div>
-                <div className="flex flex-col gap-6 pl-10">
+                <div className="flex flex-col gap-5 pl-7 sm:pl-10">
                   {NOTES.map((note, i) => (
                     <div key={i} className="relative">
-                      <p className="handwritten text-[10px] absolute -left-12 top-0" style={{ color: "rgba(200, 100, 100, 0.7)" }}>{note.time}</p>
-                      <p className="handwritten text-base leading-[28px]" style={{ color: "rgba(20, 10, 5, 0.85)" }}>{note.text}</p>
+                      <p className="handwritten text-[10px] absolute -left-8 sm:-left-12 top-0" style={{ color: "rgba(200, 100, 100, 0.8)" }}>{note.time}</p>
+                      <p className="handwritten text-sm sm:text-base leading-[26px] sm:leading-[28px]" style={{ color: "rgba(20, 10, 5, 0.9)" }}>{note.text}</p>
                     </div>
                   ))}
                   <div className="relative">
-                    <p className="handwritten text-[10px] absolute -left-12 top-0" style={{ color: "rgba(200, 100, 100, 0.5)" }}>03:42 AM</p>
-                    <p className="handwritten text-base leading-[28px] italic" style={{ color: "rgba(100, 70, 50, 0.85)" }}>About the Creator: Still writing code. Still listening to rain. Keep trying.</p>
+                    <p className="handwritten text-[10px] absolute -left-8 sm:-left-12 top-0" style={{ color: "rgba(200, 100, 100, 0.6)" }}>03:42 AM</p>
+                    <p className="handwritten text-sm sm:text-base leading-[26px] sm:leading-[28px] italic" style={{ color: "rgba(100, 70, 50, 0.9)" }}>About the Creator: Still writing code. Still listening to rain. Keep trying.</p>
                   </div>
                 </div>
               </div>
@@ -1118,8 +1117,8 @@ export default function App() {
         </div>
       )}
 
-      {/* ── Keyboard hints sticky notes — bottom right ── */}
-      <div className="absolute bottom-8 right-8 z-20 fade-in" style={{ animationDelay: "1s" }}>
+      {/* ── Keyboard hints sticky notes — hidden on mobile screens ── */}
+      <div className="hidden md:block absolute bottom-8 right-8 z-20 fade-in" style={{ animationDelay: "1s" }}>
         <div className="flex flex-col gap-1.5 p-3 rounded-xl border border-amber/25" style={{ background: "rgba(14, 8, 3, 0.85)", backdropFilter: "blur(12px)" }}>
           {[["Space", "play / pause"], ["← →", "prev / next"], ["R", "toggle rain"], ["B", "whiteboard"], ["T", "tea stall"], ["N", "notes"]].map(([key, desc]) => (
             <div key={key} className="flex items-center gap-2.5">
@@ -1132,16 +1131,16 @@ export default function App() {
 
       {/* ── Coming Soon Toast Notification ── */}
       {toastMessage && (
-        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none fade-in">
-          <div className="flex items-center gap-3 px-6 py-3 rounded-full border border-amber-warm/40 shadow-2xl"
+        <div className="fixed top-6 sm:top-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none fade-in w-max max-w-[90vw]">
+          <div className="flex items-center gap-2.5 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full border border-amber-warm/40 shadow-2xl"
             style={{
-              background: "rgba(20, 12, 5, 0.94)",
+              background: "rgba(20, 12, 5, 0.95)",
               backdropFilter: "blur(20px)",
               boxShadow: "0 12px 36px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(232, 169, 74, 0.2)"
             }}
           >
-            <span className="text-xl">☕</span>
-            <span className="handwritten text-lg font-bold text-amber-warm tracking-wide">{toastMessage}</span>
+            <span className="text-base sm:text-xl">☕</span>
+            <span className="handwritten text-sm sm:text-lg font-bold text-amber-warm tracking-wide truncate">{toastMessage}</span>
           </div>
         </div>
       )}

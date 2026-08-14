@@ -20,10 +20,13 @@
 
 html, body, #root {
   height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
   background: var(--soft-black);
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 * {
@@ -210,16 +213,26 @@ input[type="range"]::-moz-range-thumb {
   bottom: 0;
   left: 10%;
   width: 320px;
+  max-width: calc(100vw - 32px);
   background: #f6ebd0; /* Crumpled tea stall paper look */
   border: 1px solid #d8be92;
   box-shadow: 0 -8px 32px rgba(0,0,0,0.6), 0 4px 10px rgba(0,0,0,0.15);
-  border-radius: 12px 12px 0 0;
+  border-radius: 16px 16px 0 0;
   padding: 24px;
   transform: translateY(100%);
   transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   z-index: 50;
   font-family: 'Caveat', cursive;
   color: #533918;
+}
+@media (max-width: 640px) {
+  .sliding-paper-menu {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
+    padding: 20px 18px 24px;
+  }
 }
 .sliding-paper-menu.open {
   transform: translateY(0);
