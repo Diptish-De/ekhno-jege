@@ -118,6 +118,7 @@ class RainSynthesizer {
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const SONGS = [
+  { title: "Special Night Mix", artist: "Late Night Beats", duration: "4:30", total: 270, ytId: "5RN7-wdKAKg" },
   { title: "Kun Faya Kun", artist: "A.R. Rahman", duration: "7:52", total: 472, ytId: "T94PHkuydcw" },
   { title: "O Re Piya", artist: "Rahat Fateh Ali Khan", duration: "5:12", total: 312, ytId: "y2s4A0m5d8w" },
   { title: "Iktara", artist: "Kavita Seth", duration: "4:21", total: 261, ytId: "A2WJ2wRz2Hw" },
@@ -216,9 +217,9 @@ function getKolkataTime() {
 type Overlay = "whiteboard" | "teaStall" | "books" | "headphones" | "notes" | "clock" | null
 
 export default function App() {
-  const [currentSong, setCurrentSong] = useState(1)
+  const [currentSong, setCurrentSong] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const [progress, setProgress] = useState(134)
+  const [progress, setProgress] = useState(0)
   const [liked, setLiked] = useState(false)
   const [looping, setLooping] = useState(false)
   const [rainOn, setRainOn] = useState(true)
