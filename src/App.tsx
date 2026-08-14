@@ -152,9 +152,17 @@ const PLAYLISTS: Record<string, string> = {
   "90s Bollywood": "PLAFjPVdERAkt7jNU1XW7EWXHLyYyf7Sux",
   "90s": "PLAFjPVdERAkt7jNU1XW7EWXHLyYyf7Sux",
   "Ghazals": "PLlgtUI5-ajb5Z1cJY0YNNr9oukdSQ4SCU",
+  "Late Night Songs": "PLmfcCDSUSykaj8VP1b5M_UKHTf9cKWrNS",
+  "Late Night": "PLmfcCDSUSykaj8VP1b5M_UKHTf9cKWrNS",
+  "Rainy Evening Mix": "PL9PwPs7-UT5xc9OveyAY7wRQvd2UyIQOt",
+  "Rain Mode": "PL9PwPs7-UT5xc9OveyAY7wRQvd2UyIQOt",
+  "Old Bengali Classics": "PLtgWTUdMPxCNhfFOxCw_8_K9aCU4vRVHo",
+  "Rain": "PL9PwPs7-UT5xc9OveyAY7wRQvd2UyIQOt",
+  "Nostalgia": "PLAFjPVdERAkt7jNU1XW7EWXHLyYyf7Sux",
+  "Midnight": "PLmfcCDSUSykaj8VP1b5M_UKHTf9cKWrNS",
 }
 
-const LISTENING_MODES = ["Work", "Study", "Rain", "Nostalgia", "Midnight", "90s Bollywood", "Ghazals"]
+const LISTENING_MODES = ["Work", "Study", "Rain", "Nostalgia", "Midnight", "90s Bollywood", "Ghazals", "Late Night Songs", "Rainy Evening Mix", "Old Bengali Classics"]
 
 const TEA_MENU = ["90s Bollywood", "Ghazals", "Late Night Songs", "Rainy Evening Mix", "Old Bengali Classics"]
 
