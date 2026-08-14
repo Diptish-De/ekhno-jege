@@ -118,16 +118,16 @@ class RainSynthesizer {
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const SONGS = [
-  { title: "Kun Faya Kun", artist: "A.R. Rahman", duration: "7:52", total: 472, ytId: "T94PHkuyd84" },
-  { title: "O Re Piya", artist: "Rahat Fateh Ali Khan", duration: "5:12", total: 312, ytId: "z12qG8q_0lU" },
-  { title: "Iktara", artist: "Kavita Seth", duration: "4:21", total: 261, ytId: "fS8bU65G0Cg" },
+  { title: "Kun Faya Kun", artist: "A.R. Rahman", duration: "7:52", total: 472, ytId: "T94PHkuydcw" },
+  { title: "O Re Piya", artist: "Rahat Fateh Ali Khan", duration: "5:12", total: 312, ytId: "y2s4A0m5d8w" },
+  { title: "Iktara", artist: "Kavita Seth", duration: "4:21", total: 261, ytId: "A2WJ2wRz2Hw" },
   { title: "Agar Tum Saath Ho", artist: "Alka Yagnik & Arijit Singh", duration: "5:42", total: 342, ytId: "sK7riqg2mr4" },
-  { title: "Phir Le Aya Dil", artist: "Arijit Singh", duration: "5:08", total: 308, ytId: "4-L6R-P__t4" },
-  { title: "Tum Se Hi", artist: "Mohit Chauhan", duration: "5:21", total: 321, ytId: "mt9xg0pkW2w" },
-  { title: "Kabira", artist: "Tochi Raina & Rekha Bhardwaj", duration: "3:43", total: 223, ytId: "jH1i1b28kSg" },
-  { title: "Aaoge Jab Tum", artist: "Rashid Khan", duration: "5:55", total: 355, ytId: "1Y-Y1z75jns" },
-  { title: "Choo Lo", artist: "The Local Train", duration: "3:53", total: 233, ytId: "IPXIgEAGe4U" },
-  { title: "Tune Kaha", artist: "Prateek Kuhad", duration: "3:24", total: 204, ytId: "eF41iT-yW1I" },
+  { title: "Phir Le Aya Dil", artist: "Arijit Singh", duration: "5:08", total: 308, ytId: "A85u1W02x2k" },
+  { title: "Tum Se Hi", artist: "Mohit Chauhan", duration: "5:21", total: 321, ytId: "Cb6wuzOurPc" },
+  { title: "Kabira", artist: "Tochi Raina & Rekha Bhardwaj", duration: "3:43", total: 223, ytId: "jHL9xpI9L68" },
+  { title: "Aaoge Jab Tum", artist: "Rashid Khan", duration: "5:55", total: 355, ytId: "nO39n957sUo" },
+  { title: "Choo Lo", artist: "The Local Train", duration: "3:53", total: 233, ytId: "sFMRqxCexDk" },
+  { title: "Tune Kaha", artist: "Prateek Kuhad", duration: "3:24", total: 204, ytId: "T1t27a0s7fQ" },
   { title: "Waqt Ki Baatein", artist: "Dream Note", duration: "4:07", total: 247, ytId: "pEEk70w5sL0" },
 ]
 
@@ -286,6 +286,10 @@ export default function App() {
         events: {
           onReady: () => {
             setYtReady(true)
+          },
+          onError: (event: any) => {
+            console.warn("YouTube player error (skipping):", event.data)
+            setCurrentSong(s => (s + 1) % SONGS.length)
           },
           onStateChange: (event: any) => {
             const YT = (window as any).YT
@@ -788,7 +792,7 @@ export default function App() {
           <h3 className="handwritten mb-6" style={{ color: "rgba(212,168,67,0.8)", fontSize: "1.1rem", borderBottom: "1px solid rgba(200,137,31,0.18)", paddingBottom: "12px" }}>Tonight's Queue</h3>
           <div className="flex flex-col gap-1">
             {SONGS.map((s, i) => (
-              <button key={i} onClick={() => { setCurrentSong(i); setProgress(0) }} className="flex items-start gap-3 text-left py-3 px-2 rounded-lg bg-transparent border-none cursor-pointer" style={{ background: currentSong === i ? "rgba(200,137,31,0.12)" : "transparent", borderBottom: "1px solid rgba(200,137,31,0.08)" }}
+              <button key={i} onClick={() => { setCurrentSong(i); setProgress(0); setPlaying(true); }} className="flex items-start gap-3 text-left py-3 px-2 rounded-lg bg-transparent border-none cursor-pointer" style={{ background: currentSong === i ? "rgba(200,137,31,0.12)" : "transparent", borderBottom: "1px solid rgba(200,137,31,0.08)" }}
                 onMouseEnter={e => { if (currentSong !== i) (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.07)" }}
                 onMouseLeave={e => { if (currentSong !== i) (e.currentTarget as HTMLElement).style.background = "transparent" }}
               >
