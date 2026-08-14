@@ -864,23 +864,42 @@ export default function App() {
       </button>
 
       {drawerOpen && (
-        <div className="absolute right-0 top-0 h-full z-20 drawer-in" style={{ width: "25%", minWidth: "240px", padding: "32px 24px", background: "rgba(14,8,3,0.72)", backdropFilter: "blur(20px)", borderLeft: "1px solid rgba(200,137,31,0.12)" }}>
-          <h3 className="handwritten mb-6" style={{ color: "rgba(212,168,67,0.8)", fontSize: "1.1rem", borderBottom: "1px solid rgba(200,137,31,0.18)", paddingBottom: "12px" }}>Tonight's Queue</h3>
-          <div className="flex flex-col gap-1">
+        <div className="absolute right-0 top-0 h-full z-20 drawer-in flex flex-col" style={{ width: "28%", minWidth: "260px", maxWidth: "340px", padding: "32px 24px 20px", background: "rgba(14,8,3,0.85)", backdropFilter: "blur(24px)", borderLeft: "1px solid rgba(200,137,31,0.12)" }}>
+          <h3 className="handwritten mb-4 shrink-0" style={{ color: "rgba(212,168,67,0.8)", fontSize: "1.1rem", borderBottom: "1px solid rgba(200,137,31,0.18)", paddingBottom: "12px" }}>Tonight's Queue</h3>
+          <div className="flex flex-col gap-1 overflow-y-auto flex-1 pr-1" style={{ maxHeight: "calc(100vh - 120px)" }}>
             {SONGS.map((s, i) => (
-              <button key={i} onClick={() => { setCurrentSong(i); setProgress(0); setPlaying(true); }} className="flex items-start gap-3 text-left py-3 px-2 rounded-lg bg-transparent border-none cursor-pointer" style={{ background: currentSong === i ? "rgba(200,137,31,0.12)" : "transparent", borderBottom: "1px solid rgba(200,137,31,0.08)" }}
-                onMouseEnter={e => { if (currentSong !== i) (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.07)" }}
-                onMouseLeave={e => { if (currentSong !== i) (e.currentTarget as HTMLElement).style.background = "transparent" }}
+              <button 
+                key={i} 
+                onClick={() => { 
+                  setListeningMode(null);
+                  setDynamicTrack(null);
+                  setDynamicTotal(null);
+                  setCurrentSong(i); 
+                  setProgress(0); 
+                  setPlaying(true); 
+                  if (ytPlayerRef.current && ytReady) {
+                    try {
+                      ytPlayerRef.current.loadVideoById({ videoId: s.ytId, startSeconds: 0 });
+                      ytPlayerRef.current.playVideo();
+                    } catch(e) {
+                      console.warn("Direct play failed:", e);
+                    }
+                  }
+                }} 
+                className="flex items-start gap-3 text-left py-3 px-2 rounded-lg bg-transparent border-none cursor-pointer transition-all" 
+                style={{ background: currentSong === i && !listeningMode ? "rgba(200,137,31,0.15)" : "transparent", borderBottom: "1px solid rgba(200,137,31,0.08)" }}
+                onMouseEnter={e => { if (currentSong !== i || listeningMode) (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.07)" }}
+                onMouseLeave={e => { if (currentSong !== i || listeningMode) (e.currentTarget as HTMLElement).style.background = "transparent" }}
               >
                 <span className="handwritten text-xs mt-0.5" style={{ color: "rgba(200,137,31,0.4)", minWidth: "18px" }}>{String(i + 1).padStart(2, "0")}.</span>
                 <div>
-                  <p className="serif text-xs" style={{ color: currentSong === i ? "rgba(232,169,74,0.95)" : "rgba(240,230,200,0.7)", fontSize: "0.8rem" }}>{s.title}</p>
+                  <p className="serif text-xs" style={{ color: currentSong === i && !listeningMode ? "rgba(232,169,74,0.95)" : "rgba(240,230,200,0.7)", fontSize: "0.8rem" }}>{s.title}</p>
                   <p className="handwritten text-xs" style={{ color: "rgba(200,137,31,0.4)", fontSize: "0.7rem" }}>{s.artist}</p>
                 </div>
               </button>
             ))}
           </div>
-          <p className="handwritten text-center absolute bottom-10 left-6 right-6" style={{ color: "rgba(200,137,31,0.25)", fontSize: "0.65rem" }}>03:42 AM — still awake</p>
+          <p className="handwritten text-center shrink-0 pt-3" style={{ color: "rgba(200,137,31,0.25)", fontSize: "0.65rem" }}>03:42 AM — still awake</p>
         </div>
       )}
 
