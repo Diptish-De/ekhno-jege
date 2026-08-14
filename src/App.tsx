@@ -247,7 +247,9 @@ export default function App() {
   const [ytReady, setYtReady] = useState(false)
   const [dynamicTrack, setDynamicTrack] = useState<{ title: string; artist: string } | null>(null)
   const [dynamicTotal, setDynamicTotal] = useState<number | null>(null)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
+  const toastTimerRef = useRef<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const rainSynthRef = useRef<RainSynthesizer | null>(null)
   const ytPlayerRef = useRef<any>(null)
@@ -396,10 +398,18 @@ export default function App() {
     }
   }, [playing, ytReady, listeningMode, dynamicTotal])
 
+  const showComingSoon = (name?: string) => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+    setToastMessage(name ? `${name} — Coming Soon! ☕` : "Coming Soon! ☕")
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastMessage(null)
+    }, 3000)
+  }
+
   const playModeOrPlaylist = (modeName: string) => {
-    setListeningMode(modeName)
     const playlistId = PLAYLISTS[modeName]
     if (playlistId && ytPlayerRef.current && ytReady) {
+      setListeningMode(modeName)
       try {
         ytPlayerRef.current.loadPlaylist({
           list: playlistId,
@@ -412,10 +422,7 @@ export default function App() {
         console.warn("loadPlaylist error:", e)
       }
     } else {
-      setDynamicTrack(null)
-      setDynamicTotal(null)
-      setCurrentSong(Math.floor(Math.random() * SONGS.length))
-      setPlaying(true)
+      showComingSoon(modeName)
     }
   }
 
@@ -956,18 +963,26 @@ export default function App() {
                         onClick={() => {
                           if (PLAYLISTS[item]) {
                             playModeOrPlaylist(item)
+                            closeOverlay()
                           } else {
                             const songIdx = SONGS.findIndex(s => s.title.toLowerCase() === item.toLowerCase())
                             if (songIdx !== -1) {
+                              setListeningMode(null)
                               setDynamicTrack(null)
                               setDynamicTotal(null)
                               setCurrentSong(songIdx)
                               setPlaying(true)
+                              if (ytPlayerRef.current && ytReady) {
+                                try {
+                                  ytPlayerRef.current.loadVideoById({ videoId: SONGS[songIdx].ytId, startSeconds: 0 })
+                                  ytPlayerRef.current.playVideo()
+                                } catch(e) {}
+                              }
+                              closeOverlay()
                             } else {
-                              playModeOrPlaylist(item)
+                              showComingSoon(item)
                             }
                           }
-                          closeOverlay()
                         }}
                         onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "rgba(200,137,31,0.07)"}
                         onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "transparent"}
@@ -991,11 +1006,11 @@ export default function App() {
                     <button key={i} onClick={() => {
                       if (i === 4) {
                         setOverlay("notes")
-                      } else {
-                        setListeningMode(book.playlist)
-                        setCurrentSong(Math.floor(Math.random() * SONGS.length))
-                        setPlaying(true)
+                      } else if (PLAYLISTS[book.playlist]) {
+                        playModeOrPlaylist(book.playlist)
                         closeOverlay()
+                      } else {
+                        showComingSoon(book.playlist)
                       }
                     }} className="flex items-center justify-between py-3 px-4 rounded-lg bg-transparent border-none cursor-pointer transition-all duration-200 text-left"
                       style={{ borderBottom: "1px solid rgba(200,137,31,0.08)" }}
@@ -1114,6 +1129,22 @@ export default function App() {
           ))}
         </div>
       </div>
+
+      {/* ── Coming Soon Toast Notification ── */}
+      {toastMessage && (
+        <div className="fixed top-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none fade-in">
+          <div className="flex items-center gap-3 px-6 py-3 rounded-full border border-amber-warm/40 shadow-2xl"
+            style={{
+              background: "rgba(20, 12, 5, 0.94)",
+              backdropFilter: "blur(20px)",
+              boxShadow: "0 12px 36px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(232, 169, 74, 0.2)"
+            }}
+          >
+            <span className="text-xl">☕</span>
+            <span className="handwritten text-lg font-bold text-amber-warm tracking-wide">{toastMessage}</span>
+          </div>
+        </div>
+      )}
 
     </div>
   )
